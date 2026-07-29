@@ -11,6 +11,7 @@ These are lightly-anonymized copies of the real, running system's design docs â€
 | [SYSTEM-OVERVIEW.md](SYSTEM-OVERVIEW.md) | The whole system in one read: what lives where, the daily capture-to-filed flow, design rationale |
 | [integration-spec.md](integration-spec.md) | The two-lanes model: which project folders get a vault pointer and which never touch the vault; personal-content rules; the agent skill's phased capabilities |
 | [capture-loop-spec.md](capture-loop-spec.md) | The inbox-processing pipeline: sweep phone captures, classify per chunk (action / reference / personal / junk), propose a table, human approves every write, then file + push tasks + archive |
+| [cowork-deployment-lessons.md](cowork-deployment-lessons.md) | Deploying the same skill to a second runtime (Cowork/desktop): what the device bridge gives you, the single-source + thin-adapter pattern (and why symlinks are the wrong instinct), folder-access gotchas, plugin packaging |
 
 ## Design rules that carried the system
 
