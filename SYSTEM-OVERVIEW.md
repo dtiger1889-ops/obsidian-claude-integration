@@ -16,9 +16,16 @@ still have a complete idea. Specs with full detail: `capture-loop-spec.md` and
 ## Chunk 1 — The one-sentence version
 
 You write a note on your phone; Claude does the librarian work — filing the
-keeper parts into your Obsidian vault and pushing the to-do parts into life-os —
-so the second brain maintains itself instead of rotting like every past notes
-system.
+keeper parts into your Obsidian vault and turning the to-do parts into tracked
+items — so the second brain maintains itself instead of rotting like every past
+notes system.
+
+> **Doc status.** This overview was written early and describes the shape
+> correctly, but two things have since changed in ways worth knowing up front:
+> action items now live in a Base *inside* the vault rather than being pushed
+> out to a separate task tool ([vault-bases.md](vault-bases.md)), and approval
+> happens in a staging table rather than an in-chat list
+> ([approval-staging.md](approval-staging.md)). Both are flagged inline below.
 
 ---
 
@@ -35,9 +42,9 @@ decision:
 
 The connection is **one-way: projects point INTO the vault, never the reverse.**
 Work artifacts never leak into the vault; vault notes never get buried inside
-project folders. Three projects (Health, Career, Financial) now carry a small
-"## Obsidian" pointer in their CHECKPOINT telling any future session where
-their vault counterpart lives.
+project folders. Any project with a vault counterpart carries a small
+"## Obsidian" pointer in its checkpoint file telling a future session where
+those notes live.
 
 Why the vault is even reachable: it sits *outside* the workspace `.gitignore`,
 so Claude's search tools work on it normally. That accident of placement is
@@ -56,8 +63,12 @@ programmer; the wiki is the codebase."
 Your stack already implemented about 70% of this before we started: PARA vault,
 a `00 Inbox` capture folder your phone defaults into, Syncthing sync, and
 Claude Code with file access. What was missing was the maintenance loop (the
-librarian) and the bridge to life-os for action items — that bridge is your
-extension beyond Karpathy's model. That's what we built.
+librarian) and the bridge that turns captured to-dos into tracked action items —
+that bridge is the extension beyond Karpathy's model. That's what we built.
+
+Full sourcing — including the packaged version of this exact pattern that
+already existed, and the graph+vector stack that was evaluated and declined —
+is in [prior-art.md](prior-art.md).
 
 ---
 
@@ -72,11 +83,16 @@ Three layers, one ownership rule each:
 | The rulebook (vault `HOME.md`, tag schema, specs) | You | Claude follows it, never edits it without you |
 
 `HOME.md` at the vault root is the rulebook's front page: a one-screen map of
-every folder plus the 9 agent rules (dated headings; one-situation-per-file;
-tags only from the schema; personal content never auto-filed; Writing & Journal
-untouchable; sync-conflict files flagged not fixed; `status: pinned` means
-hands off; processed notes archived never deleted; read the specific note,
-never load whole folders).
+every folder plus the numbered agent rules (dated headings; one-situation-per-file;
+tags only from the schema; personal content never auto-filed; file into the
+personal folder but never consolidate within it; sync conflicts resolved when
+obvious; `status: pinned` means hands off; processed notes archived never
+deleted; read the specific note, never load whole folders; how flagged notes get
+routed; where action items go; what gets staged for approval).
+
+It started at 9 rules and is now 12. A full depersonalized copy, with notes on
+which wordings turned out to be load-bearing, is in
+[HOME.example.md](HOME.example.md).
 
 ---
 
@@ -91,63 +107,88 @@ The daily-life flow the system exists for:
 3. **Each note gets read chunk by chunk** — one note can contain a task, a
    keeper fact, and a vent all in five lines, and each piece is handled
    separately:
-   - **Task** ("do X") → pushed into life-os.
+   - **Task** ("do X") → becomes an item note in the task index. *(Updated: the
+     original design pushed these out to a separate task tool. They now live in
+     a Base inside the vault, next to the notes that explain them — see
+     [vault-bases.md](vault-bases.md).)*
    - **Keeper reference** → filed into the right PARA file with a dated heading.
-   - **Personal** (journal, rage, medical detail) → flagged to you, never
+   - **Personal** (journal, venting, medical detail) → flagged to you, never
      auto-filed.
    - **Junk / stale** → proposed for disposal; you decide.
-4. **Nothing happens without you.** Claude shows one plain table — this chunk,
-   this classification, this destination, this exact text — and you approve or
-   reject line by line. (This is v1; trust is earned before anything automates.)
+4. **Ambiguous things wait for you.** *(Updated: v1 printed one chat table and
+   asked for line-by-line approval. That only works while you're sitting in the
+   session, so it was replaced by a staging table inside the vault — checkboxes
+   you tick on your phone whenever. Project work no longer gets asked about at
+   all. See [approval-staging.md](approval-staging.md).)*
 5. **Approved items execute; processed notes move to vault `Archive/`** so the
    inbox stays empty but the original always survives.
-6. **You get a report:** what was swept, filed, pushed, skipped, and why.
+6. **You get a report:** what was swept, filed, staged, skipped, and why.
 
 ---
 
 ## Chunk 6 — The plumbing choices worth remembering
 
-- **Tasks go through `lifeos.py` directly, not the life-os MCP.** The MCP is a
-  Claude *Desktop* extension — invisible to Claude Code — but it just shells to
-  the same `lifeos.py` script anyway, so calling the script directly is the
-  same engine with zero drift.
 - **Dated headings are the spine.** Every filed entry reads
   `## <Title> — <YYYY-MM-DD>`, dated from when you *captured* it, so provenance
   survives consolidation.
 - **`status: pinned` is your opt-out lever.** Put it in a note's frontmatter
   and the processor treats the note as furniture (e.g. a pinned
   command that deliberately lives in the inbox).
-- **Tags come from `tag-schema.md` only** — the vocabulary was derived from
-  your real historical usage; inventing new tags is forbidden.
+- **Tags come from one schema file only** — a single list of allowed tags with
+  one-line semantics, derived from your own historical usage. Inventing new tags
+  is forbidden; untagged beats force-fit.
 
 ---
 
-## Chunk 7 — The /obsidian skill: one door, three rooms
+## Chunk 7 — The /obsidian skill: one door, four rooms
 
-Everything user-facing is one skill at `~/.claude/skills/obsidian/`:
+Everything user-facing is one skill:
 
 - **Query** (default, read-only): "what was that reference detail?" from any project —
   Claude orients via `HOME.md`, finds the one note, answers with the path.
 - **Capture**: "note this down" → a dated note dropped into `00 Inbox/`,
   verbatim, sorted later.
 - **Process-inbox**: the full loop from Chunk 5.
+- **Sprint-notes** (added later): you type instructions into the `note` column
+  of the task table across ten rows in one sitting, then say "act on my sprint
+  notes" and hand over the whole batch. Claude answers in a `reply` column and
+  clears each note as it goes. Four lines of YAML; the highest-leverage piece of
+  the system. See [vault-bases.md](vault-bases.md).
+
+The skill's behavior lives in one platform-agnostic file that each runtime's
+adapter reads at runtime, so the same modes work from the CLI and from the
+desktop app without maintaining two copies —
+[cowork-deployment-lessons.md](cowork-deployment-lessons.md).
 
 ---
 
 ## Chunk 8 — What exists today vs what's next
 
-**Built and live (Phase 1):** vault `HOME.md` · the `/obsidian` skill · the
-three CHECKPOINT pointers · the first process-inbox proposal (awaiting your
-line-by-line approval).
+**Built and live:** vault `HOME.md` · the `/obsidian` skill in two runtimes ·
+the vault pointer in every project that has one · the inbox sweep · three Bases
+(task index, to-do net, approval queue) · the human↔agent message channel · the
+append-only approval ledger.
 
-**The growth ladder:**
-- **v1 (now):** everything proposed, you approve every line, runs when you ask.
-- **v2 (after a few clean passes):** the obviously-safe classes auto-file;
-  personal and ambiguous still flagged.
-- **v3 (the full Karpathy):** scheduled runs, an append-only ingest log, and a
-  "lint" pass that hunts contradictions, orphans, and stale claims across the
-  vault.
+**The growth ladder, and where it actually went:**
+- **v1 (as designed):** everything proposed, you approve every line, runs when
+  you ask.
+- **v2 (what happened instead):** the ladder turned out not to be a trust
+  gradient but a *lane split*. Rather than auto-filing "obviously safe classes"
+  after a few clean passes, project work stopped being asked about at all
+  (its destination isn't a judgment call), while everything else kept a full
+  gate — now a table in the vault instead of a chat prompt. Trust got spent
+  where ambiguity was low, not where the history was long.
+- **v3 (the full Karpathy):** scheduled runs, and a "lint" pass that hunts
+  contradictions, orphans, and stale claims across the vault. Not built.
+
+**Measured, not assumed:** the staging gate records what Claude proposed *and*
+where things actually went, in an append-only ledger outside the vault. First 14
+resolved items: a 57% override rate, half of which turned out to be a
+formatting failure rather than a filing disagreement.
+[approval-staging.md](approval-staging.md) has the breakdown.
 
 **Known unsolved problem:** phone reminders that fire without the PC on.
 Best lead is the TaskNotes plugin (reads the `due:` frontmatter you already
-use, does native Android push) — see `reminders-research.md`.
+use, does native Android push) — the full option comparison, including the
+Google Calendar path that looked viable and wasn't, is in
+[prior-art.md](prior-art.md).

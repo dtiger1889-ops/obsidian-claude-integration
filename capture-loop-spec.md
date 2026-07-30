@@ -9,10 +9,18 @@ tags:
 # Capture → action-items loop — `/process-inbox` spec
 
 > Goal: a note written on the phone (lands in `00 Inbox/` via Syncthing) becomes
-> **durable reference filed into the PARA vault** + **to-dos pushed into life-os**,
-> with Claude doing the bookkeeping and the user approving every write (v1 scope).
-> This is the "ingest" op of the Karpathy LLM-wiki model, extended with the
-> life-os action bridge. Companion doc: `integration-spec.md` (the two-lanes model).
+> **durable reference filed into the PARA vault** + **to-dos turned into tracked
+> action items**, with Claude doing the bookkeeping and the user approving every
+> write (v1 scope). This is the "ingest" op of the Karpathy LLM-wiki model,
+> extended with an action-item bridge. Companion doc:
+> [integration-spec.md](integration-spec.md) (the two-lanes model).
+>
+> **Where this doc is superseded:** the task destination below was originally a
+> separate task tool; it is now a Base inside the vault
+> ([vault-bases.md](vault-bases.md)). The v1 approval gate — a chat table — is
+> now a staging table ([approval-staging.md](approval-staging.md)). The pipeline
+> shape, the classification rules, and the scope ladder are unchanged and are
+> what this doc is still worth reading for.
 
 ## The pipeline (one processing pass)
 
@@ -20,7 +28,7 @@ tags:
 00 Inbox/*.md ──sweep──> parse ──classify──> PROPOSAL TABLE ──the user approves──> execute ──report
                                                                     │
                                               reference ──> PARA vault (dated, [[linked]], tagged)
-                                              action     ──> lifeos.py add-task (CLI)
+                                              action     ──> task index (one note per item)
                                               personal   ──> flag only, never auto-file
                                               junk       ──> propose disposition, the user decides
 ```
@@ -35,7 +43,7 @@ tags:
 ### 2. Parse
 - YAML frontmatter observed in real inbox notes: `created`, `updated`, `due`,
   `tags`, `status`. `created` supplies the dated-provenance date when filing;
-  `due` carries into the life-os task (and stays TaskNotes-compatible for the
+  `due` carries into the task item (and stays TaskNotes-compatible for the
   phone-reminders thread — don't strip it).
 - Body may be **mixed** — the real `Todos.md` contains a wikilink, two tasks, and
   a complaint in five lines. Classification is per-chunk, not per-note.
@@ -43,9 +51,9 @@ tags:
 ### 3. Classify (per chunk)
 | Class | Test | Destination |
 |---|---|---|
-| **Action item** | "do X" — a verb the user must perform, incl. `Dispatch:` items | life-os task (text, `--due` from frontmatter/inline, `--context` if obvious) |
-| **Durable reference** | useful again later, answers a future situation | PARA file per retrieval-context rule; tag from `tag-schema.md` (never invent tags) |
-| **Personal** (journal / rage / relationship / medical detail) | your tag-schema personal-content territory | NEVER auto-file. Leave in inbox, flag to the user with a suggestion |
+| **Action item** | "do X" — a verb the user must perform, incl. `Dispatch:` items | task item (text, `due` from frontmatter/inline, context if obvious) |
+| **Durable reference** | useful again later, answers a future situation | PARA file per retrieval-context rule; tag from the tag schema (never invent tags) |
+| **Personal** (journal / venting / relationship / medical detail) | the personal-content territory in the tag schema | NEVER auto-file. Leave in inbox, flag to the user with a suggestion |
 | **Ephemeral / junk** | stale one-liner, done already, fragment | propose leave-or-delete; the user decides (no unsolicited deletes — hard rule) |
 
 Ambiguity rule: when a chunk could be task or reference, it's **both** — file the
@@ -61,13 +69,9 @@ written before this. Options must be short and jargon-free.
 - **Reference →** append `## <Title> — <YYYY-MM-DD>` (date = note's `created`) to
   the target vault file, or create a new file when the situation is new (split,
   don't cram). Add `[[wikilinks]]` to related notes; tags per schema.
-- **Tasks →** `python <WORKSPACE>\life-os\homebase\lifeos.py
-  add-task "<text>" [--priority p] [--due YYYY-MM-DD] [--context c]`
-  — **CLI direct, not the MCP.** The lifeos MCP is a Claude *Desktop* extension
-  (`.mcpb` in AppData) and is not registered in Claude Code; but the MCP server
-  itself just shells to `lifeos.py` per call (`mcp-extensions/life-os/server/index.js:715`),
-  so the CLI is the same engine with zero drift. Verify the exact invocation
-  (python vs py, arg quoting) once at build time.
+- **Tasks →** create one item note in the task index, carrying the text plus
+  whatever metadata the capture supplied (due date, priority, context). Schema
+  and conventions: [vault-bases.md](vault-bases.md).
 - **Processed-note disposition →** per the approved plan (open decision below).
 
 ### 6. Report
@@ -94,7 +98,8 @@ is the Karpathy-op version — add it when the loop runs regularly, not v1.
   in vault `HOME.md` or a vault-level agent doc — and both read it.
 - **`HOME.md` is a build prerequisite** (the processor's orientation input):
   single-screen PARA map + conventions. Build it first, same work session
-  (~20 min, also closes spec Phase 1 along with the 3 CHECKPOINT pointers).
+  (~20 min, and it closes spec Phase 1 along with the project-side pointers).
+  A worked copy: [HOME.example.md](HOME.example.md).
 
 ## Scope ladder (v1 → later)
 1. **v1 (build now): propose-then-approve.** Every vault write and every task push

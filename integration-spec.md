@@ -26,13 +26,11 @@ Integration is **one-way: projects point into the vault.** The project does the 
 
 ## Domain mappings
 
-Only some projects have a vault counterpart:
+Only some projects have a vault counterpart. The mapping is one project folder → one `Areas/` folder, and it exists only where a project genuinely draws on durable personal reference — a health-data project reading `Areas/Health/`, a job-search project reading `Areas/Career/`, a finance project reading `Areas/Finances/`.
 
-- **Health** → `Areas/Health/`
-- **Career** → `Areas/Career/`
-- **Financial** → `Areas/Finances/`
+Everything else has no vault side and gets **no pointer**. Purely personal vault areas (hobbies, relationships, home logistics, `Writing & Journal/`) have no project counterpart and are reached only via the skill.
 
-Everything else (all other projects) has no vault side and gets **no pointer**. Personal vault areas (`Hobbies`, `Relationships`, `Home & Logistics`, `Writing & Journal`) have no project and are reached only via the skill.
+Write the mapping down explicitly rather than letting sessions guess: a pointer that names the folder is what turns "the vault exists" into "this session will actually read it."
 
 ## Components
 
@@ -48,8 +46,8 @@ Each mapped project's `CHECKPOINT.md` gets one block:
 
 ```
 ## Obsidian
-Domain reference: ~/Documents/Obsidian Vault/Areas/Health/
-(Medical · Workouts · etc.). Read the
+Domain reference: ~/Documents/Obsidian Vault/Areas/<domain>/
+(<the two or three notes most likely to matter>). Read the
 specific note when the task needs it; don't load the folder.
 ```
 
@@ -72,17 +70,17 @@ The skill encodes (or reads from HOME): vault root, PARA map, the conventions be
 - **Don't load wholesale** — read the specific note, never a whole folder, into context.
 
 ## Build order
-1. **Phase 1 (now, ~20 min, low-risk):** `HOME.md` + the 3 CHECKPOINT pointers. Immediately makes the vault discoverable from mapped projects.
+1. **Phase 1 (now, ~20 min, low-risk):** `HOME.md` + one pointer per mapped project. Immediately makes the vault discoverable from those projects.
 2. **Phase 2:** `/obsidian` skill, read/query only.
 3. **Phase 3:** capture-to-Inbox.
 4. **Phase 4:** routed writes (gated for personal content).
 
 ## Caveats
-- **Cowork can't see the vault** — it's local; cloud/scheduled sessions won't have it mounted. This is a local-Claude-Code feature.
-- **Backup is separate** — vault = Obsidian Sync, workspace = git. Both covered, different domains.
+- ~~**Cloud sessions can't see the vault** — it's local; they won't have it mounted. This is a local-CLI-only feature.~~ **No longer true**, and it was the load-bearing assumption behind a lot of this doc: a connected desktop app exposes a device bridge that reaches local files from a cloud session. See [cowork-deployment-lessons.md](cowork-deployment-lessons.md).
+- **Backup is separate** — the vault and the code workspace are backed up by different mechanisms. Both covered, different domains; don't assume one covers the other.
 
-## Open decisions
-- How far the skill should go: read-only / +capture / +routed writes.
-- Whether conventions live in `HOME.md`, or a dedicated vault `CLAUDE.md` (agent rules) with HOME as the human index.
-- Any project beyond Health/Career/Financial that should map — e.g. do other project folders map to vault Areas?
+## Open decisions (as of this doc's writing)
+- How far the skill should go: read-only / +capture / +routed writes. *(Resolved: all three, plus a fourth mode — see [SYSTEM-OVERVIEW.md](SYSTEM-OVERVIEW.md) chunk 7.)*
+- Whether conventions live in `HOME.md`, or a dedicated agent-rules file with HOME as the human index. *(Resolved: `HOME.md` carries both — [HOME.example.md](HOME.example.md).)*
+- Which projects beyond the first few should map.
 - Minor: stray notes at the vault root → `00 Inbox/` or file them.
