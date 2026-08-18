@@ -10,7 +10,7 @@ and a task tool outside the vault can't sit next to the note that explains the
 task.** A Base does both — the items are real notes in a folder, and the Base is
 a live view over them that works on the phone.
 
-This doc has the three Bases the system runs on, the frontmatter schema behind
+This doc has the four Bases the system runs on, the frontmatter schema behind
 them, and the conventions that took a few rounds to get right.
 
 > Naming: these files use `agent` where the live system uses a model nickname,
@@ -361,6 +361,55 @@ the most design behind it. It has its own doc:
 
 ---
 
+## 5. The idea-triage Base — checkboxes as a command surface
+
+The fourth Base came later, and it is the one that changed what a Base is *for*.
+
+The task index tracks work that has already been decided on. A batch of
+overnight-generated ideas is a different animal: most should die, a few deserve
+a stress-test before anyone commits, and deciding which is which is a two-second
+judgment the human can make on a phone — if the interface asks the right
+question.
+
+So instead of a status field, each idea note carries **a set of boolean
+properties, one per action the agent can take**:
+
+```yaml
+stage: triage          # triage | instructed | results | archived | promoted
+archive_idea: false    # kill it
+stress_test: false     # one adversarial pass, is this actually wrong
+prior_art: false       # has someone already built this
+write_spec: false      # turn it into a real spec
+```
+
+The human ticks any combination of boxes in the table view, on the phone,
+without opening a note. The agent's next run treats **a ticked box as a queued
+command**: it runs the action, writes a receipt into the `reply` field, clears
+the box, and advances `stage`. Exactly the message-channel pattern from section
+2, with checkboxes instead of prose — and the same invariant, that the agent
+clears its own queue so a ticked box always means "not done yet."
+
+Three conventions this one needed:
+
+- **Multi-select is the point.** "Prior art *and* stress test" is a common
+  answer, and forcing a single status field would have lost it. Booleans compose;
+  a status enum doesn't.
+- **Outputs land outside the vault**, in the working folder of whatever project
+  the run belongs to. The vault gets the verdict, not the research dump.
+- **Processed items stay in the folder as history.** Killed and promoted ideas
+  keep their notes, stamped, rather than being archived — a **deliberate
+  exception** to the archive-when-spent rule, because the entire value of an
+  idea queue is the record of what was already tried and rejected. Exceptions
+  like this are fine; undocumented exceptions are not, so it is written next to
+  the rule it breaks.
+
+The general lesson: **a Base column that the agent reads as an instruction turns
+a table into a control panel.** Any property you can tick on a phone is an API,
+and it is a far better one than a chat message, because it survives you closing
+the app.
+
+---
+
 ## Why Bases rather than the alternatives
 
 | Alternative | Why it lost |
@@ -389,6 +438,13 @@ you're not in the right context to act on, and you stop opening it.
 - **Verify on the phone before you rely on it.** Column widths, view tabs, and
   inline editing behave differently on mobile, and a Base you can only use at
   your desk defeats the point of capturing on your phone.
+- **The default view is the only view.** Whatever state your agent can set, the
+  *default* view has to show it. Two items were once normalized into a valid
+  "held" state that the default view's filter excluded, and they disappeared from
+  the human's queue with both notes intact on disk — which from his side looks
+  exactly like the agent deleting his work. Adding a separate "Held" tab fixed
+  nothing, because nobody switches tabs. Use a nested filter on the default view
+  (`folder AND (state = review OR state = held)`) rather than a new view.
 - **A Base is a view, not a store.** Delete a `.base` file and you lose the
   table, not the work — the items are ordinary notes in a folder. That's a
   feature: it means you can restructure your views without migrating anything.

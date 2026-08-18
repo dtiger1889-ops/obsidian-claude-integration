@@ -101,7 +101,11 @@ which wordings turned out to be load-bearing, is in
 The daily-life flow the system exists for:
 
 1. **You capture on the phone.** Any thought → a note in `00 Inbox/`. Offline,
-   zero organizing effort. Syncthing carries it to the PC.
+   zero organizing effort. Syncthing carries it to the PC. *(Added later: web
+   pages come in the same way, via the official browser clipper, which drops
+   markdown into its own `Clippings/` folder. The sweep reads both folders —
+   the capture tool keeps its default and the processor learns the folder, never
+   the other way round.)*
 2. **You (or a schedule, later) say "process my inbox."** Claude sweeps the
    inbox, skipping pinned notes and sync-conflict files.
 3. **Each note gets read chunk by chunk** — one note can contain a task, a
@@ -165,9 +169,11 @@ desktop app without maintaining two copies —
 ## Chunk 8 — What exists today vs what's next
 
 **Built and live:** vault `HOME.md` · the `/obsidian` skill in two runtimes ·
-the vault pointer in every project that has one · the inbox sweep · three Bases
-(task index, to-do net, approval queue) · the human↔agent message channel · the
-append-only approval ledger.
+the vault pointer in every project that has one · the inbox sweep, over both the
+typed-capture folder and the web-clipper folder · four Bases (task index, to-do
+net, approval queue, idea triage) · the human↔agent message channel · the
+append-only approval ledger · a report-only link auditor run after any bulk
+restructure.
 
 **The growth ladder, and where it actually went:**
 - **v1 (as designed):** everything proposed, you approve every line, runs when
@@ -184,8 +190,22 @@ append-only approval ledger.
 **Measured, not assumed:** the staging gate records what Claude proposed *and*
 where things actually went, in an append-only ledger outside the vault. First 14
 resolved items: a 57% override rate, half of which turned out to be a
-formatting failure rather than a filing disagreement.
-[approval-staging.md](approval-staging.md) has the breakdown.
+formatting failure rather than a filing disagreement. Fixing the format cut it
+to 8% over the next 12.
+[approval-staging.md](approval-staging.md) has both passes.
+
+**The maintenance you don't see coming:** in a synced, plugin-heavy vault the
+interesting failures are silent — archived notes breaking inbound links (and
+spawning junk notes when someone clicks one), a linter rewriting `updated`
+whenever you *open* a note, a plugin setting that turns out to be per-device and
+absent from the synced config, a sync conflict resolving toward the stale copy.
+All of them, with mechanisms and fixes:
+[vault-maintenance.md](vault-maintenance.md).
+
+**The tax nobody budgets for:** the files an agent must read before it can act.
+That set hit 43 KB here, paid by every session, and silently lost its tail on a
+runtime with an output cap. Cutting it 20% without changing behavior:
+[context-budget.md](context-budget.md).
 
 **Known unsolved problem:** phone reminders that fire without the PC on.
 Best lead is the TaskNotes plugin (reads the `due:` frontmatter you already

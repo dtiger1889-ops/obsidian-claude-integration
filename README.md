@@ -24,6 +24,8 @@ tissue.
 | See the task/review tables and their YAML | [vault-bases.md](vault-bases.md) |
 | Understand how the agent asks permission | [approval-staging.md](approval-staging.md) |
 | Skip to the lessons | [rules-that-stuck.md](rules-that-stuck.md) |
+| Know what will break six months in | [vault-maintenance.md](vault-maintenance.md) |
+| Stop your agent's instruction files from bloating | [context-budget.md](context-budget.md) |
 | See what this was built on (and what was rejected) | [prior-art.md](prior-art.md) |
 
 ## The docs
@@ -33,9 +35,11 @@ tissue.
 | [SYSTEM-OVERVIEW.md](SYSTEM-OVERVIEW.md) | The whole system in one read: what lives where, the daily capture-to-filed flow, design rationale |
 | [keep-to-obsidian-migration.md](keep-to-obsidian-migration.md) | Migrating ~600 Google Keep notes into a PARA vault: recovering the timestamps Takeout drops, the utility-sort triage rubric, and the six ways the consolidation went wrong |
 | [HOME.example.md](HOME.example.md) | A depersonalized copy of the vault's rulebook — the folder map plus the 12 numbered agent conventions every session reads first, with notes on adapting each |
-| [vault-bases.md](vault-bases.md) | The three Obsidian Bases the system runs on (task index, to-do net, approval queue): full `.base` YAML, the item frontmatter schema, the human↔agent message channel, and the conventions that took a few rounds |
-| [approval-staging.md](approval-staging.md) | The staging gate: why in-chat approval failed, the two-lane split, the frontmatter lifecycle, the append-only ledger — and what happened when the gate was instrumented and reported a 57% override rate |
-| [rules-that-stuck.md](rules-that-stuck.md) | ~25 rules that are load-bearing today, each with the incident that produced it |
+| [vault-bases.md](vault-bases.md) | The four Obsidian Bases the system runs on (task index, to-do net, approval queue, idea triage): full `.base` YAML, the item frontmatter schema, the human↔agent message channel, checkbox properties used as a command surface, and the conventions that took a few rounds |
+| [approval-staging.md](approval-staging.md) | The staging gate: why in-chat approval failed, the two-lane split, the frontmatter lifecycle, the append-only ledger — what happened when the gate was instrumented and reported a 57% override rate, and the re-test three weeks later that put it at 8% |
+| [rules-that-stuck.md](rules-that-stuck.md) | ~35 rules that are load-bearing today, each with the incident that produced it |
+| [vault-maintenance.md](vault-maintenance.md) | The silent failures in a synced, plugin-heavy vault: archiving that breaks inbound links and spawns junk notes, a linter that rewrites `updated` when you merely open a note, per-device plugin settings missing from the synced config, sync conflicts that resolve toward the stale copy |
+| [context-budget.md](context-budget.md) | The files an agent must read before it can act, treated as a budget: how a mandatory 43 KB read set got cut 20% with no behavior change, why concatenated reads are where truncation hides, and the four approaches that were rejected |
 | [prior-art.md](prior-art.md) | Sourcing: the LLM-wiki pattern and PARA this borrows from, the graph+vector stack that was evaluated and declined (with the two triggers that would reopen it), and the plugin comparisons behind each tooling choice |
 | [capture-loop-spec.md](capture-loop-spec.md) | The inbox-processing pipeline: sweep phone captures, classify per chunk (action / reference / personal / junk), stage, then file + push tasks + archive |
 | [integration-spec.md](integration-spec.md) | The two-lanes model: which project folders get a vault pointer and which never touch the vault; personal-content rules; the agent skill's phased capabilities |
@@ -67,6 +71,14 @@ tissue.
   to-do, and the completion record belongs in the linked note.
 - **Never add a field a human has to hand-populate.** The one field that needed
   manual entry is blank on nearly every item.
+- **The default view is the interface.** A state your agent can set but the
+  default view filters out doesn't look like a state — it looks like the agent
+  deleted something.
+- **A contradiction inside the rulebook is authoritative permission to be
+  wrong.** When a rule supersedes another, retire the old body; don't just add
+  the new one above it.
+- **Every rule you add is paid for by every session.** The mandatory read set is
+  a budget, and it should have a number attached.
 
 Full list with the incident behind each: [rules-that-stuck.md](rules-that-stuck.md).
 

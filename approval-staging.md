@@ -239,6 +239,56 @@ are still unmeasured.
 
 ---
 
+## The re-test, three weeks later
+
+The caveat above said "re-test at ~20 resolved." Here is the re-test, at 26.
+
+**The 12 items resolved after the two rules shipped: 10 filed exactly as
+proposed, 1 filed after a routing change, 1 genuine destination override.**
+
+| Window | Resolved | Overrides | Rate |
+|---|---|---|---|
+| Before the rules | 14 | 8 | 57% |
+| After the rules | 12 | 2 stamped, 1 real | 17% stamped, 8% real |
+
+Three things worth pulling out of that.
+
+**Zero hedges in the second window.** Every one of the 12 proposals is a real
+path. The "half the override rate was really a non-proposal rate" finding
+predicted that fixing the format would take roughly half the rate with it, and
+the rate fell by more than half. That is the cleanest result the pilot has
+produced, and it came from a formatting rule, not a smarter model.
+
+**The one real override ran the same direction the first pass named** —
+filing-cabinet folder proposed, ongoing-life-domain folder chosen. That mismatch
+is now 4 for 4 across both windows. A pattern that survives its own fix being
+deployed is a real pattern, not noise; the encoded rule ("check the life-domain
+folders before defaulting to reference") narrowed it without closing it.
+
+**One of the two stamped overrides wasn't one.** Its recorded final destination
+is identical to the proposal — the human approved it after asking for the note's
+*contents* to change, and the stamp got set to "redirected" anyway. That is a
+9-point swing in a 12-item window from one hand-set field, which is its own
+lesson: **recompute the rate from proposed-vs-final, don't count the label.**
+
+### What is deliberately not concluded here
+
+The individual re-read of all 26 resolved items has not been done, so this is an
+aggregate result with one audited exception, not a repeat of the original
+item-by-item analysis. Acceptance rate, hold rate, and time-to-resolution remain
+unmeasured. Same analyst, same vault, n=12.
+
+There is also a live proposal on the table that this data does not settle: that
+a persistent override rate is an **over-alerting** signal rather than a filing
+signal — that the fix is to stop staging item classes with no single obvious
+action, and to measure *share of items with one defined action* instead of
+override rate. It is queued against the next analysis pass, not adopted. Worth
+naming here because it is the more interesting hypothesis: an approval queue's
+failure mode is rarely that the proposals are bad. It is that items with no
+obvious right answer got into the queue at all.
+
+---
+
 ## The generalizable part
 
 1. **Put the gate in the tool the human already opens, not in the conversation.**

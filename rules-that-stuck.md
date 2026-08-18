@@ -57,6 +57,43 @@ were silently missed — six here, eleven there. **Anything derived from a deriv
 list inherits its omissions invisibly**, and the failure produces no error, no
 warning, and a plausible-looking result. This one generalizes well past notes.
 
+### ★ File by function, not by topic
+
+Where a note lives is decided by **what you do with it**, not by what it is
+about. A note you actively maintain belongs with your other maintained
+life-domain notes; a note you look things up in belongs in reference.
+
+**Cost:** a credentials-and-keys note filed by topic into the technical
+reference folder, because it is "about" technology. It is not a reference — it
+is a thing the human edits whenever an account changes, and reference is where
+he goes to *read*. Same failure in the other direction: a checklist that had
+stopped being used got left in the active-lists folder for months because its
+subject hadn't changed. **The question that sorts correctly is "what will I be
+doing when I open this?"** — not "what is this about?"
+
+### Archive the origin note when it is spent
+
+A note that generated tasks is done when its tasks are done. It does not stay in
+the working folder as evidence.
+
+**Cost:** a note whose follow-ups had all closed sat in an active project folder
+for ten days, reading like live work every time anyone scanned the folder. The
+cost of a spent note in a live folder isn't storage, it's that it makes the
+folder untrustworthy at a glance — which is the only way anyone reads a folder.
+
+### Archiving is a link operation, not a move
+
+Moving a note into an excluded archive folder breaks every `[[link]]` pointing
+at it, and in this app a broken link **creates an empty note when clicked**.
+Sever inbound links at archive time; never re-point a live note into the
+archive.
+
+**Cost:** weeks of mystery empty notes appearing in the vault, blamed on
+everything from sync to the graph view. Eleven live-to-archive entanglements
+across eight files, one of them regenerated on a schedule by a script that had
+to be fixed too. Full mechanism and the rejected alternatives:
+[vault-maintenance.md](vault-maintenance.md).
+
 ### Tags come from a fixed schema; never invent one
 
 A single file lists allowed tags with one-line semantics. Leave a note untagged
@@ -65,6 +102,26 @@ rather than force-fit.
 **Cost:** low, because the rule went in early — which is the point. An agent
 inventing tags produces a vocabulary that looks organized and is unsearchable,
 because nothing is tagged consistently enough to filter on.
+
+### ★ Capture lands wherever the capture tool wants; the sweep learns the folder
+
+When a capture tool has its own opinion about where things land, take its
+default and teach the processor to sweep that folder too. Do not add a move step
+to the human's capture path.
+
+**Cost:** avoided, after three tools were trialled for getting web pages off a
+phone and into the vault. The winner was a browser extension that clips the
+*rendered* page — which sidesteps every bot wall, because it never re-fetches
+the URL — and it drops clips into its own folder, not the inbox. The tempting fix
+is to make it land in the inbox. The right fix was one line in the sweep step:
+enumerate both folders. **Every extra tap between a thought and a saved note is a
+tap where the capture stops happening**, and the whole system is worthless if
+capture is annoying.
+
+Runner-up lesson from the same trial: print-to-PDF is the fallback lane, not the
+pipeline. It loses structure, and one browser's print path drops comment
+authorship entirely — so the archive you build is missing the thing you would
+have wanted from it.
 
 ---
 
@@ -172,6 +229,20 @@ answered, because they were parked in a file with one reader who wasn't the
 human. **A question in a place the human doesn't open is not a question, it's a
 note to yourself.**
 
+### ★ The default view IS the interface
+
+Any state the agent can set must be visible in the view the human actually
+opens. Adding a *new* view for a new state is not a fix.
+
+**Cost:** two items were normalized from a contradictory state into a clean
+"held" state — correct bookkeeping, and both notes were untouched on disk. The
+review table's default view filtered for "in review" only, so both items
+vanished from the human's queue. From his side that is indistinguishable from
+the agent deleting his stuff. The first repair added a separate "Held" tab,
+which did nothing, because he opens the default view and always will.
+**A state nobody can see is worse than no state**: it converts a tracked item
+into a lost one while the record looks perfect.
+
 ### An open item needs work that is OWED
 
 Before recording something as an open thread, check the artifact's real state on
@@ -251,6 +322,36 @@ comforting explanation ("probably just a backlog", "benign timing") closes the
 investigation while the real bug keeps running. Show the mechanism with a
 source, or say you don't know yet.
 
+### ★ Never describe your own infrastructure from what you can see running
+
+How your system backs up, syncs, or deploys is a *documented fact*. It is not
+inferable from a process list, a running daemon, or a folder that happens to
+exist.
+
+**Cost:** asked why the vault felt slow, the agent read the machine's running
+processes and announced that four different sync services were all watching the
+vault. Three of them weren't — one was disabled system-wide, one had been
+removed from the setup months earlier, and one covers an entirely different
+folder tree. The correct answer was one file away and had been written down for
+exactly this reason. **A running process tells you a program is running; it
+tells you nothing about which folder it covers.** The fix wasn't "be more
+careful" — it was a hard pointer in the file every session of that project
+loads, saying: read the architecture doc before any claim about sync or backup,
+never a process list.
+
+### Recompute the number from the fields; don't trust the stamp
+
+When an outcome is recorded by hand in a status field, audit it against the
+underlying data before you report a rate built on it.
+
+**Cost:** small, caught early, and it would have been embarrassing. An item in
+the approval ledger was stamped "redirected" — counted as a filing error in the
+override rate — while its recorded final destination was byte-identical to what
+the agent had proposed. The human had approved it after asking for the note's
+*contents* to change. One mis-stamp in a small sample moves a headline number by
+several points. **Status labels are set by whoever was in a hurry; the fields
+are set by what happened.**
+
 ### Decide anything decidable
 
 Only genuinely two-sided calls get escalated. "I didn't want to commit" is not
@@ -282,6 +383,53 @@ with it. The agent follows it and never edits it unattended.
 **Cost:** avoided, by construction. Without a designated winner, two files
 disagree and the agent picks whichever it read most recently — which is a coin
 flip that changes between sessions.
+
+### ★ A contradiction inside the rulebook is authoritative permission to be wrong
+
+When a new rule supersedes an old one, **retire the old rule's body**. Adding
+the new rule and leaving the old text in place is not a partial fix; it is a
+worse state than before.
+
+**Cost:** rule 9 still ended with a routing instruction that rule 11 had
+replaced weeks earlier. Both live in the file every session reads *first*, and
+that file overrides every other document in the system. So an agent that reads
+in order and acts on rule 9 has explicit, authoritative permission to route work
+to the wrong place — and it isn't misbehaving, it's obeying. The dangerous
+version of a stale rule isn't the one nobody reads. It's the one in your
+highest-authority file, sitting above the rule that replaced it.
+
+Practical form: whenever you add a rule that supersedes another, grep the
+rulebook for the old behavior before you close the task.
+
+### ★ Any difference between the deployed copy and the source means redeploy
+
+If a runtime runs from an uploaded or copied bundle, the bundle is the artifact
+and it must equal the source. The agent does not get to grade the size of the
+difference.
+
+**Cost:** twice in one week. First, a fix authored inside the cloud runtime
+reached the live skill by upload and **never reached disk** — not the source
+project, not the local skill folder. Live and source diverged silently, and the
+only copy of the good text was an attachment in a chat window. Second, once
+that was merged back, the agent twice declined to re-upload the bundle because
+the remaining delta was "only comments." The human's ruling: the bundle exists
+so that it *is* what runs; judging whether a diff is worth shipping is not the
+agent's call. **"Only comments" is a judgment about content, and the invariant
+is about identity.**
+
+### ★ Keep the mandatory read set small, and measure it in bytes
+
+Every rule you add is paid for by every session, forever, before it does any
+work.
+
+**Cost:** the files an agent session must read before acting grew to 595 lines /
+43,065 bytes without anyone deciding it should — and in a second runtime with an
+output cap, a concatenated read of them silently lost its tail, which is exactly
+where the newest rules live. Cut 20% with no behavior change by giving each
+shared convention one owner file, and by moving the dated incident stories off
+the startup path into a separate file the live rules link to. Full method,
+numbers, rejected approaches, and how the cut was proven lossless:
+[context-budget.md](context-budget.md).
 
 ### Number the rules and cite them by number
 
