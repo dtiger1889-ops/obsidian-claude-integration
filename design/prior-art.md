@@ -146,7 +146,7 @@ the agent can already read the path, and Windows symlinks need Developer Mode
 while sync tools and git handle them inconsistently.
 
 Related and worth reading before you reach for a symlink in any agent context:
-the [thin-adapter refutation](cowork-deployment-lessons.md) of the same instinct
+the [thin-adapter refutation](../operations/cowork-deployment-lessons.md) of the same instinct
 in a different setting.
 
 ---

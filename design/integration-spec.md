@@ -76,11 +76,11 @@ The skill encodes (or reads from HOME): vault root, PARA map, the conventions be
 4. **Phase 4:** routed writes (gated for personal content).
 
 ## Caveats
-- ~~**Cloud sessions can't see the vault** — it's local; they won't have it mounted. This is a local-CLI-only feature.~~ **No longer true**, and it was the load-bearing assumption behind a lot of this doc: a connected desktop app exposes a device bridge that reaches local files from a cloud session. See [cowork-deployment-lessons.md](cowork-deployment-lessons.md).
+- ~~**Cloud sessions can't see the vault** — it's local; they won't have it mounted. This is a local-CLI-only feature.~~ **No longer true**, and it was the load-bearing assumption behind a lot of this doc: a connected desktop app exposes a device bridge that reaches local files from a cloud session. See [cowork-deployment-lessons.md](../operations/cowork-deployment-lessons.md).
 - **Backup is separate** — the vault and the code workspace are backed up by different mechanisms. Both covered, different domains; don't assume one covers the other.
 
 ## Open decisions (as of this doc's writing)
-- How far the skill should go: read-only / +capture / +routed writes. *(Resolved: all three, plus a fourth mode — see [SYSTEM-OVERVIEW.md](SYSTEM-OVERVIEW.md) chunk 7.)*
+- How far the skill should go: read-only / +capture / +routed writes. *(Resolved: all three, plus a fourth mode — see [SYSTEM-OVERVIEW.md](../SYSTEM-OVERVIEW.md) chunk 7.)*
 - Whether conventions live in `HOME.md`, or a dedicated agent-rules file with HOME as the human index. *(Resolved: `HOME.md` carries both — [HOME.example.md](HOME.example.md).)*
 - Which projects beyond the first few should map.
 - Minor: stray notes at the vault root → `00 Inbox/` or file them.

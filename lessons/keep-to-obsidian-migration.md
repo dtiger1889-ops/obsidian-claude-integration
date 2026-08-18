@@ -211,7 +211,7 @@ happened to everything that isn't there anymore.
 
 A migrated vault decays back into a junk drawer within months unless something
 maintains it. That maintenance loop is the rest of this repo:
-[SYSTEM-OVERVIEW.md](SYSTEM-OVERVIEW.md) for the model,
-[capture-loop-spec.md](capture-loop-spec.md) for the pipeline,
-[approval-staging.md](approval-staging.md) for the gate that keeps the agent's
+[SYSTEM-OVERVIEW.md](../SYSTEM-OVERVIEW.md) for the model,
+[capture-loop-spec.md](../design/capture-loop-spec.md) for the pipeline,
+[approval-staging.md](../design/approval-staging.md) for the gate that keeps the agent's
 writes reviewable.

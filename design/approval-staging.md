@@ -192,7 +192,7 @@ overridden      : 8  (57% of resolved)
 "Vanished-but-retained" is the line that proves the design: that record's note no
 longer exists anywhere in the vault, and its data point is still here.
 
-The script is in this repo: [extract_approvals.ps1](extract_approvals.ps1).
+The script is in this repo: [extract_approvals.ps1](../operations/extract_approvals.ps1).
 
 ---
 

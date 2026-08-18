@@ -92,7 +92,7 @@ archive.
 everything from sync to the graph view. Eleven live-to-archive entanglements
 across eight files, one of them regenerated on a schedule by a script that had
 to be fixed too. Full mechanism and the rejected alternatives:
-[vault-maintenance.md](vault-maintenance.md).
+[vault-maintenance.md](../operations/vault-maintenance.md).
 
 ### Tags come from a fixed schema; never invent one
 
@@ -307,7 +307,7 @@ disagreements at all — the proposal had been a hedge, so the human supplied th
 folder himself. **Half the measured error rate was a formatting failure.** If
 you're unsure, write the path you'd pick and leave the approve box unticked. An
 uncertain proposal is reviewable at a glance; a hedge hands the work back while
-appearing to do it. Full numbers: [approval-staging.md](approval-staging.md).
+appearing to do it. Full numbers: [approval-staging.md](../design/approval-staging.md).
 
 ### ★ Trust functional evidence over a file that disagrees
 
@@ -373,7 +373,7 @@ it", "add a task") onto its own tools. Change a rule once; both runtimes inherit
 it on the next run.
 
 **Cost:** avoided. Full reasoning, including why symlinks are the wrong instinct
-here: [cowork-deployment-lessons.md](cowork-deployment-lessons.md).
+here: [cowork-deployment-lessons.md](../operations/cowork-deployment-lessons.md).
 
 ### The schema layer is human-owned and wins every conflict
 
@@ -429,7 +429,7 @@ where the newest rules live. Cut 20% with no behavior change by giving each
 shared convention one owner file, and by moving the dated incident stories off
 the startup path into a separate file the live rules link to. Full method,
 numbers, rejected approaches, and how the cut was proven lossless:
-[context-budget.md](context-budget.md).
+[context-budget.md](../operations/context-budget.md).
 
 ### Number the rules and cite them by number
 

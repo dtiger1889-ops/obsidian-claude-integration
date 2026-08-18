@@ -8,8 +8,8 @@ tags:
 # The second-brain system — what we built and how it works
 
 Written to be read in chunks. Each section stands alone; stop anywhere and you
-still have a complete idea. Specs with full detail: `capture-loop-spec.md` and
-`integration-spec.md`. This doc is the mental model, not the spec.
+still have a complete idea. Specs with full detail: `design/capture-loop-spec.md` and
+`design/integration-spec.md`. This doc is the mental model, not the spec.
 
 ---
 
@@ -23,9 +23,9 @@ notes system.
 > **Doc status.** This overview was written early and describes the shape
 > correctly, but two things have since changed in ways worth knowing up front:
 > action items now live in a Base *inside* the vault rather than being pushed
-> out to a separate task tool ([vault-bases.md](vault-bases.md)), and approval
+> out to a separate task tool ([vault-bases.md](design/vault-bases.md)), and approval
 > happens in a staging table rather than an in-chat list
-> ([approval-staging.md](approval-staging.md)). Both are flagged inline below.
+> ([approval-staging.md](design/approval-staging.md)). Both are flagged inline below.
 
 ---
 
@@ -68,7 +68,7 @@ that bridge is the extension beyond Karpathy's model. That's what we built.
 
 Full sourcing — including the packaged version of this exact pattern that
 already existed, and the graph+vector stack that was evaluated and declined —
-is in [prior-art.md](prior-art.md).
+is in [prior-art.md](design/prior-art.md).
 
 ---
 
@@ -92,7 +92,7 @@ routed; where action items go; what gets staged for approval).
 
 It started at 9 rules and is now 12. A full depersonalized copy, with notes on
 which wordings turned out to be load-bearing, is in
-[HOME.example.md](HOME.example.md).
+[HOME.example.md](design/HOME.example.md).
 
 ---
 
@@ -114,7 +114,7 @@ The daily-life flow the system exists for:
    - **Task** ("do X") → becomes an item note in the task index. *(Updated: the
      original design pushed these out to a separate task tool. They now live in
      a Base inside the vault, next to the notes that explain them — see
-     [vault-bases.md](vault-bases.md).)*
+     [vault-bases.md](design/vault-bases.md).)*
    - **Keeper reference** → filed into the right PARA file with a dated heading.
    - **Personal** (journal, venting, medical detail) → flagged to you, never
      auto-filed.
@@ -123,7 +123,7 @@ The daily-life flow the system exists for:
    asked for line-by-line approval. That only works while you're sitting in the
    session, so it was replaced by a staging table inside the vault — checkboxes
    you tick on your phone whenever. Project work no longer gets asked about at
-   all. See [approval-staging.md](approval-staging.md).)*
+   all. See [approval-staging.md](design/approval-staging.md).)*
 5. **Approved items execute; processed notes move to vault `Archive/`** so the
    inbox stays empty but the original always survives.
 6. **You get a report:** what was swept, filed, staged, skipped, and why.
@@ -157,12 +157,12 @@ Everything user-facing is one skill:
   of the task table across ten rows in one sitting, then say "act on my sprint
   notes" and hand over the whole batch. Claude answers in a `reply` column and
   clears each note as it goes. Four lines of YAML; the highest-leverage piece of
-  the system. See [vault-bases.md](vault-bases.md).
+  the system. See [vault-bases.md](design/vault-bases.md).
 
 The skill's behavior lives in one platform-agnostic file that each runtime's
 adapter reads at runtime, so the same modes work from the CLI and from the
 desktop app without maintaining two copies —
-[cowork-deployment-lessons.md](cowork-deployment-lessons.md).
+[cowork-deployment-lessons.md](operations/cowork-deployment-lessons.md).
 
 ---
 
@@ -192,7 +192,7 @@ where things actually went, in an append-only ledger outside the vault. First 14
 resolved items: a 57% override rate, half of which turned out to be a
 formatting failure rather than a filing disagreement. Fixing the format cut it
 to 8% over the next 12.
-[approval-staging.md](approval-staging.md) has both passes.
+[approval-staging.md](design/approval-staging.md) has both passes.
 
 **The maintenance you don't see coming:** in a synced, plugin-heavy vault the
 interesting failures are silent — archived notes breaking inbound links (and
@@ -200,15 +200,15 @@ spawning junk notes when someone clicks one), a linter rewriting `updated`
 whenever you *open* a note, a plugin setting that turns out to be per-device and
 absent from the synced config, a sync conflict resolving toward the stale copy.
 All of them, with mechanisms and fixes:
-[vault-maintenance.md](vault-maintenance.md).
+[vault-maintenance.md](operations/vault-maintenance.md).
 
 **The tax nobody budgets for:** the files an agent must read before it can act.
 That set hit 43 KB here, paid by every session, and silently lost its tail on a
 runtime with an output cap. Cutting it 20% without changing behavior:
-[context-budget.md](context-budget.md).
+[context-budget.md](operations/context-budget.md).
 
 **Known unsolved problem:** phone reminders that fire without the PC on.
 Best lead is the TaskNotes plugin (reads the `due:` frontmatter you already
 use, does native Android push) — the full option comparison, including the
 Google Calendar path that looked viable and wasn't, is in
-[prior-art.md](prior-art.md).
+[prior-art.md](design/prior-art.md).
