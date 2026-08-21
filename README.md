@@ -1,4 +1,4 @@
-# obsidian-claude-integration
+# obsidian-agent-integration
 
 Design docs for wiring **Claude Code to an Obsidian vault** as a second-brain
 system: the vault is the durable reference layer (PARA structure, phone capture
